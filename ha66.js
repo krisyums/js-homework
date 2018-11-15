@@ -16,13 +16,8 @@ const persons = [
 // [ 'Mareike', 1995, 3, 'f' ],
 // [ 'Magdalena', 1979, 1, 'f' ] ]
 function filterGender(personsArray, gender) {
-    var res = []; 
-    for(let i=0 ;i < personsArray.length; i++) {
-        if(personsArray[i][3] == gender) {
-            res.push(personsArray[i]);
-        }
-    }
-    return res;
+    return personsArray.filter(function(person) {
+        return person[3] === gender;});
 }
 
 // Diese Funktion berechnet das Alter jeder Person
@@ -35,14 +30,8 @@ function filterGender(personsArray, gender) {
 // [ 'Mervin', 46 ],
 // [ 'Magdalena', 38 ] ]
 function getAge(personsArray) {
-    var res = [];
-    for(let i=0 ;i < personsArray.length; i++) {
-        var age = [];
-        age = personsArray[i].slice(0,2);
-        age[1] = 2017 - age[1];
-        res.push(age);
-    }
-    return res;
+    return personsArray.map(function(person) {
+        return [person[0], 2017 - person[1]];});
 }
 
 // Diese Funktion berechnet den Status (Alter * Statuszahl) jeder Person
@@ -58,30 +47,8 @@ function getAge(personsArray) {
 // [ 'Magdalena', 38 ],
 // [ 'Maria', 27 ] ]
 function getSortedStatus(personsArray) {
-    var res = [];
-    
-    for(let i=0; i < personsArray.length; i++) {
-        var temp = [];
-        var arr = [];
-        temp = personsArray[i].slice(0,3);
-        temp[1] = 2017 - temp[1];
-        temp[2] = temp[2] * temp[1];
-        arr = temp.slice(0,1).concat(temp.slice(2,3));
-        res.push(arr);
-    }
-    
-    res.sort((a,b) => a[0].localeCompare(b[0]));
-
-    for(let i=1; i < personsArray.length; i++) {
-        var j = i;
-        while(j > 0 && (res[j-1][1] > res[j][1])) {
-            temp = res[j-1];
-            res[j-1] = res[j];
-            res[j] = temp;
-            j--;
-        }
-    }
-    return res;
+    return getAge(personsArray).sort(function(a, b) {
+        return a[1] > b[1] ? 1 : -1;});
 }
 
 // Diese Funktion gibt ein Array mit den Namen aller Personen zurück
@@ -89,11 +56,8 @@ function getSortedStatus(personsArray) {
 // Bsp-Rückgabe:
 // [ 'Max', 'Maria', 'Meik', 'Mareike', 'Mervin', 'Magdalena' ]
 function getNames(personsArray) {
-    var res = [];
-    for(let i=0; i < personsArray.length; i++) {
-        res.push(personsArray[i][0]);
-    }
-    return res;
+    return personsArray.map(function(person) {
+        return person[0];});
 }
 
 // Diese Funktion gibt das addierte Alter aller Personen zurück
@@ -101,8 +65,9 @@ function getNames(personsArray) {
 // Bsp-Rückgabe:
 // 228
 function getAggregatedAge(personsArray) {
-    var res = getAge(personsArray).map(A => A[1]).reduce((acc, cur) => acc + cur, 0);
-    return res;
+    return getAge(personsArray)
+        .map(person => person[1])
+        .reduce((acc, cur) => acc + cur, 0);
 }
 
 // Diese Funktion gibt ein Objekt zurück, welches zwei Eigenschaften hat: 'Woman' und 'Men'
@@ -111,12 +76,10 @@ function getAggregatedAge(personsArray) {
 // Bsp-Rückgabe:
 // { Woman: 3, Men: 3 }
 function getAmount(personsArray) {
-    filterGender(personsArray, 'm').length;
-    filterGender(personsArray, 'f').length;
-    
-    var res = {"Women": filterGender(personsArray, 'm').length,
-                "Men" : filterGender(personsArray, 'f').length};
-    return res;
+    return {
+        "Women": filterGender(personsArray, 'm').length,
+        "Men" : filterGender(personsArray, 'f').length
+    };
 }
 
 /*console.log(getAmount(persons));
